@@ -20,4 +20,180 @@ html
                     a(href='https://twitter.com/unkillbob') @unkillbob 
                     a(href='https://www.vendhq.com/careers') Vend
 
+            section
+                h2 In the beginning...
+
+            section
+                h2 DOM Storage
+
+                br.bullet
+                ul
+                    li key-value (both Strings)
+                    li sessionStorage - duration of session
+                    li localStorage - persistent
+
+            section
+                h2 WebSQL
+
+                br.bullet
+                ul
+                    li Asynchronous, transactional, relational database
+                    li Deprecated :(
+
+            section
+                h1 IndexedDB
+
+                br.bullet
+                div.bullet
+
+                    blockquote "IndexedDB is an API for client-side storage of significant amounts of structured data, which also enables high performance searches of this data using indexes."
+                        br
+                        br
+                        cite - 
+                            a(href='https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API') MDN
+
+            section(data-bespoke-state='emphatic')
+
+                h2 Asynchronous
+
+            section(data-bespoke-state='emphatic')
+
+                h2 Transactional
+
+                // Abort, rollback
+
+            section(data-bespoke-state='emphatic')
+
+                h2 Object Store
+
+                // key-value
+                // keys can be properties of the value
+
+            section(data-bespoke-state='emphatic')
+
+                h2 Indexed
+
+                // Any property of the object
+                // Or generated
+                // Fast lookup or sorted enumeration
+
+            section
+                h1.bullet API
+
+                pre.bullet
+                    code.language-javascript.
+                        var IDB = window.indexedDB;
+
+            section
+                h2 Open a Database
+                pre
+                    code.language-javascript.
+                        var req = IDB.open('MyDB', 5),
+                            myDB;
+
+                        req.onsuccess = function (event) {
+                            myDB = event.target.result;
+                        };
+
+                        req.onerror = function (event) { ... };
+
+            section
+                h2 Create / Update Schema
+                pre
+                    code.language-javascript.
+                        req.onupgradeneeded = function(event) {
+
+                            if (event.oldVersion < 1) {
+                                // Create some stores & indexes
+
+                            } else if (event.oldVersion < 2) {
+                                 // ...
+                            }
+                        };
+
+            section
+                h2 ... Create Stores
+                pre
+                    code.language-javascript.
+                        var myStore = myDB.createObjectStore('MyStore', {
+                            keyPath: 'myKey',
+                            autoIncrement: true
+                        });
+
+            section
+                h2 ... Create Indexes
+                pre
+                    code.language-javascript.
+                        myStore.createIndex('byId', 'id', {
+                            unique: true,
+                            multiEntry: false
+                        });
+
+                // If `multiEntry` === true - would index all values in array if
+                // keyPath value were array
+
+            section
+                h2 Add Some Data
+                pre.bullet
+                    code.language-javascript.
+                        var tx = myDB.transaction(['myStore'], 'readwrite');
+
+                        var myStore = tx.objectStore('myStore');
+
+                pre.bullet
+                    code.language-javascript.
+                        var request = myStore.add({ /* data goes here */ });
+
+                        request.onsuccess = function (event) { ... };
+
+            section
+                h2 ... Or Update/Delete Data
+                pre
+                    code.language-javascript.
+                        myStore.put({ /* the data */ }, 'key_value');
+
+                        myStore.delete('keyToDelete');
+
+                // put key is optional, will add if key doesn't exist
+
+            section
+                h2 Read Some Data
+                pre.bullet
+                    code.language-javascript.
+                        myDB.transaction(['myStore'], 'readonly')
+
+                pre.bullet
+                    code.language-javascript.
+                        var request = myStore.get('a_key_value');
+
+                        request.onsuccess = function (event) {
+                            var data = event.target.result;
+                        };
+
+            section
+                h2 ... Or Iterate
+                pre
+                    code.language-javascript.
+                        var request = myStore.openCursor(/* range, dir */);
+
+                        request.onsuccess = function (event) {
+                            var cursor = event.target.result;
+
+                            console.log(cursor.key + ': ' + cursor.value);
+
+                            cursor.continue();
+                        };
+
+            section
+                h2 Index!
+                pre
+                    code.language-javascript.
+                        var index = myStore.index('byId');
+
+                        index.count(...);
+
+                        index.get(...);
+
+                        index.openCursor(...);
+
         script(src='build/build.js')
