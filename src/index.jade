@@ -21,7 +21,9 @@ html
                     a(href='https://www.vendhq.com/careers') Vend
 
             section
-                h2 In the beginning...
+                h2.bullet In the beginning...
+
+                h2.bullet ... there was storage
 
             section
                 h2 DOM Storage
@@ -150,7 +152,7 @@ html
                 h2 ... Or Update/Delete Data
                 pre
                     code.language-javascript.
-                        myStore.put({ /* the data */ }, 'key_value');
+                        myStore.put({ /* the data */ }, 'key1');
 
                         myStore.delete('keyToDelete');
 
@@ -164,7 +166,7 @@ html
 
                 pre.bullet
                     code.language-javascript.
-                        var request = myStore.get('a_key_value');
+                        var request = myStore.get('keyToLookup');
 
                         request.onsuccess = function (event) {
                             var data = event.target.result;
