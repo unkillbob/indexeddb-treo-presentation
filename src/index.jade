@@ -231,7 +231,120 @@ html
             section
                 h1 Treo
 
-                h3
+                h3.bullet
                     a(href='https://github.com/alekseykulikov/treo') https://github.com/alekseykulikov/treo
+                pre.bullet
+                    code.language-javascript.
+                        var treo = require('treo');
+                        var treo = window.treo;
+
+            section
+                h2 Create Schema & Database
+                pre.bullet
+                    code.language-javascript.
+                        var schema = treo.schema()
+                            .version(1)
+                              .addStore('myStore', { key: 'myKey' })
+                              .addIndex('byId', 'id', { unique: true })
+                            .version(2)
+                              .getStore('myStore')
+                              .addIndex('byName', 'name');
+                pre.bullet
+                    code.language-javascript.
+                        var myDB = treo('myDB', schema); // Synchronous
+
+            section
+                h2 Add Some Data
+                pre.bullet
+                    code.language-javascript.
+                        var myStore = myDb.store('myStore');
+                        myStore.put('key', {/* data */}, function (err) {
+                            if (err) { 
+                                // failed
+                            } // else success
+                        });
+                pre.bullet
+                    code.language-javascript.
+                        myStore.put({/* data */}, function(err) { ... });
+
+            section
+                h2 ... Or Lots of Data
+                pre
+                    code.language-javascript.
+                        myStore.batch({
+                            key1: 'new value',
+                            key2: null, // delete
+                            key3: 'updated value'
+                        }, fn);
+
+                        myStore.batch([
+                            { key: 'key1', val: 'value' },
+                            { key: 'key2', val: 'another value'}
+                        ], fn);
+
+            section
+                h2 Read Some Data
+                pre
+                    code.language-javascript.
+                        myStore.get('keyToLookup', function (err, val) {
+                            if (err) {
+                                // failed
+                            } else {
+                                console.log('Found: ' + val);
+                            }
+                        });
+
+            section
+                h2.bullet Synchronous
+                pre.bullet
+                    code.language-javascript.
+                        var schema = treo.schema(), // Sync
+                            db = treo('db', schema), // Sync
+                            store = db.store('store'); // Sync
+
+                        store.get(...) // First async
+
+                ul
+                    li Opens database connection
+                    li Handles onupgradeneeded - creates stores, indexes
+                    li Opens transaction (appropriate for put/get)
+                    li Performs the actual put/get
+
+            section
+                h2 Index!
+                pre
+                    code.language-javascript.
+                        var byYear = myStore.index('byYear');
+
+                        byYear.get(2014, fn);
+                        byYear.get({ gte: 1999 }, fn);
+
+            section
+                h2.bullet Iteration?
+                pre.bullet
+                    code.language-javascript.
+                        store.cursor(opts, fn)
+                        index.cursor(opts, fn)
+                br
+                h2.bullet Transactions?
+                pre.bullet
+                    code.language-javascript.
+                        db.transaction(type, stores, fn)
+
+            section
+                h2.bullet Don't like callbacks?
+                br
+                h3.bullet Promises plugin!
+                pre.bullet
+                    code.language-javascript.
+                        var promise = window.treoPromise;
+                        myDB.use(promise());
+
+                        myDB.store('myStore').get('key1')
+                            .then(function (data) {
+                                // success!
+                            }, function (err) {
+                                // error
+                            });
 
         script(src='build/build.js')
