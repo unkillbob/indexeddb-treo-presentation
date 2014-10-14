@@ -215,6 +215,28 @@ html
                 h1 Wrapper Libraries
 
             section
+                h2.bullet Checklist
+                br
+                ul.check-list
+                    li
+                        input(type='checkbox',checked)
+                        h3 Everything
+
+            section
+                h2.bullet No Really
+                br
+                ul.check-list
+                    li
+                        input(type='checkbox',checked)
+                        h3 Multiple Object Stores
+                    li
+                        input(type='checkbox',checked)
+                        h3 Iteration (cursors or similar)
+                    li
+                        input(type='checkbox',checked)
+                        h3 Multi-store Transactions
+
+            section
                 h2 IDBWrapper
                 a.bullet(href='https://github.com/jensarps/IDBWrapper') https://github.com/jensarps/IDBWrapper
                 br
@@ -225,14 +247,6 @@ html
                 a.bullet(href='https://github.com/aaronpowell/db.js') https://github.com/aaronpowell/db.js
                 br
                 h3.bullet No iteration API or access to cursors
-
-            section
-                h2.bullet Pro Tip
-                br
-                h3.bullet If you're going to write a wrapper library...
-                h3.bullet
-                    strong don't prevent
-                    |  aspects of the native API.
 
             section
                 h1 Treo
