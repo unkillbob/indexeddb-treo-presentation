@@ -131,7 +131,11 @@ html
                 pre
                     code.language-javascript.
                         var myStore = myDB.createObjectStore('MyStore', {
+
+                            // Key stored in this property on the object
                             keyPath: 'myKey',
+
+                            // Key is auto generated for you
                             autoIncrement: true
                         });
 
