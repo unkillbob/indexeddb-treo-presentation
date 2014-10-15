@@ -237,7 +237,7 @@ html
             section
                 h2.bullet No Really
                 br
-                ul.check-list
+                ul.check-list.left-align
                     li
                         input(type='checkbox',checked)
                         h3 Multiple Object Stores
@@ -378,5 +378,21 @@ html
                             }, function (err) {
                                 // error
                             });
+
+            section
+                h2.bullet Offline? What?
+                br
+                ul.left-align
+                    li
+                        h3 Not for everyone
+                    li
+                        h3
+                            code userExperience++
+                    li
+                        h3
+                            code IndexedDB++
+                    li
+                        h3
+                            code treo++
 
         script(src='build/build.js')
