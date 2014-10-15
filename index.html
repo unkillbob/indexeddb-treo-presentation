@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>IndexedDB with Treo</title>
+    <link rel="stylesheet" type="text/css" href="build/build.css">
+  </head>
+  <body>
+    <article>
+      <section>
+        <h1>Offline Storage</h1>
+        <h2>in the Browser</h2>
+      </section>
+      <section>
+        <div id="profile-pic"></div>
+        <h2>James Bunt</h2>
+        <h3><a href="https://twitter.com/unkillbob">@unkillbob </a></h3><br>
+        <h3>Front End Engineer</h3>
+        <h3 id="vend-logo"></h3>
+      </section>
+      <section>
+        <h2 class="bullet">Offline? What?</h2><br>
+        <h3 class="bullet"><code>userExperience++</code></h3>
+      </section>
+      <section>
+        <h2 class="bullet">In the beginning...</h2>
+        <h2 class="bullet">... there was storage</h2>
+      </section>
+      <section>
+        <h2>DOM Storage</h2><br class="bullet">
+        <ul>
+          <li>key-value (both Strings)</li>
+          <li>sessionStorage - duration of session</li>
+          <li>localStorage - persistent</li>
+          <li>limited capacity</li>
+        </ul>
+      </section>
+      <section>
+        <h2>WebSQL</h2><br class="bullet">
+        <ul>
+          <li>Asynchronous, transactional, relational database</li>
+          <li>Much larger capacity</li>
+          <li>Deprecated :(</li>
+        </ul>
+      </section>
+      <section>
+        <h1>IndexedDB</h1><br class="bullet">
+        <div class="bullet">
+          <blockquote>"IndexedDB is an API for client-side storage of significant amounts of structured data, which also enables high performance searches of this data using indexes."<br><br>
+            <cite>- <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">MDN</a></cite>
+          </blockquote>
+        </div>
+      </section>
+      <section data-bespoke-state="emphatic">
+        <h2>Asynchronous</h2>
+      </section>
+      <section data-bespoke-state="emphatic">
+        <h2>Transactional</h2>
+        <!-- Abort, rollback-->
+      </section>
+      <section data-bespoke-state="emphatic">
+        <h2>Object Store</h2>
+        <!-- key-value-->
+        <!-- keys can be properties of the value-->
+      </section>
+      <section data-bespoke-state="emphatic">
+        <h2>Indexed</h2>
+        <!-- Any property of the object-->
+        <!-- Or generated-->
+        <!-- Fast lookup or sorted enumeration-->
+      </section>
+      <section>
+        <h1 class="bullet">API</h1>
+        <pre class="bullet"><code class="language-javascript">var IDB = window.indexedDB;
+</code></pre>
+      </section>
+      <section>
+        <h2>Open a Database</h2>
+        <pre><code class="language-javascript">var req = IDB.open('MyDB', 5),
+    myDB;
+    
+req.onsuccess = function (event) {
+    myDB = event.target.result;
+};
+
+req.onerror = function (event) { ... };
+</code></pre>
+      </section>
+      <section>
+        <h2>Create / Update Schema</h2>
+        <pre><code class="language-javascript">req.onupgradeneeded = function(event) {
+
+    if (event.oldVersion < 1) {
+        // Create some stores & indexes
+        
+    } else if (event.oldVersion < 2) {
+         // ...
+    }
+};
+</code></pre>
+      </section>
+      <section>
+        <h2>... Create Stores</h2>
+        <pre><code class="language-javascript">var myStore = myDB.createObjectStore('MyStore', {
+
+    // Key stored in this property on the object
+    keyPath: 'myKey',
+    
+    // Key is auto generated for you
+    autoIncrement: true
+});
+</code></pre>
+      </section>
+      <section>
+        <h2>... Create Indexes</h2>
+        <pre><code class="language-javascript">myStore.createIndex('byId', 'id', {
+    unique: true,
+    multiEntry: false
+});
+</code></pre>
+        <!-- If `multiEntry` === true - would index all values in array if-->
+        <!-- keyPath value were array-->
+      </section>
+      <section>
+        <h2>Add Some Data</h2>
+        <pre class="bullet"><code class="language-javascript">var tx = myDB.transaction(['myStore'], 'readwrite');
+
+var myStore = tx.objectStore('myStore');
+</code></pre>
+        <pre class="bullet"><code class="language-javascript">var request = myStore.add({ /* data goes here */ });
+
+request.onsuccess = function (event) { ... };
+</code></pre>
+      </section>
+      <section>
+        <h2>... Or Update/Delete Data</h2>
+        <pre><code class="language-javascript">myStore.put({ /* the data */ }, 'key1');
+
+myStore.delete('keyToDelete');
+</code></pre>
+        <!-- put key is optional, will add if key doesn't exist-->
+      </section>
+      <section>
+        <h2>Read Some Data</h2>
+        <pre class="bullet"><code class="language-javascript">myDB.transaction(['myStore'], 'readonly')
+</code></pre>
+        <pre class="bullet"><code class="language-javascript">var request = myStore.get('keyToLookup');
+
+request.onsuccess = function (event) {
+    var data = event.target.result;
+};
+</code></pre>
+      </section>
+      <section>
+        <h2>... Or Iterate</h2>
+        <pre><code class="language-javascript">var request = myStore.openCursor(/* range, dir */);
+
+request.onsuccess = function (event) {
+    var cursor = event.target.result;
+    
+    console.log(cursor.key + ': ' + cursor.value);
+    
+    cursor.continue();
+};
+</code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Indexes?</h2>
+        <pre class="bullet"><code class="language-javascript">var index = myStore.index('byId');
+
+index.count(...);
+
+index.get(...);
+
+index.openCursor(...);
+</code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Verbose? Raw?</h2><br><br>
+        <h2 class="bullet">By Design: Unopinionated</h2><br>
+        <h2 class="bullet">Use a Wrapper</h2>
+      </section>
+      <section>
+        <h1>Wrapper Libraries</h1>
+      </section>
+      <section>
+        <h2 class="bullet">Checklist</h2><br>
+        <ul class="check-list">
+          <li>
+            <input type="checkbox" checked>
+            <h3>Everything</h3>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2 class="bullet">No Really</h2><br>
+        <ul class="check-list left-align">
+          <li>
+            <input type="checkbox" checked>
+            <h3>Multiple Object Stores</h3>
+          </li>
+          <li>
+            <input type="checkbox" checked>
+            <h3>Iteration (cursors or similar)</h3>
+          </li>
+          <li>
+            <input type="checkbox" checked>
+            <h3>Multi-store Transactions</h3>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2>IDBWrapper</h2><a href="https://github.com/jensarps/IDBWrapper" class="bullet">https://github.com/jensarps/IDBWrapper</a><br>
+        <h3 class="bullet">Limited to a single object store</h3>
+      </section>
+      <section>
+        <h2>DB.js</h2><a href="https://github.com/aaronpowell/db.js" class="bullet">https://github.com/aaronpowell/db.js</a><br>
+        <h3 class="bullet">No iteration API or access to cursors</h3>
+      </section>
+      <section>
+        <h1>Treo</h1>
+        <h3 class="bullet"><a href="https://github.com/alekseykulikov/treo">https://github.com/alekseykulikov/treo</a></h3>
+        <pre class="bullet"><code class="language-javascript">var treo = require('treo');
+var treo = window.treo;
+</code></pre>
+      </section>
+      <section>
+        <h2>Create Schema & Database</h2>
+        <pre class="bullet"><code class="language-javascript">var schema = treo.schema()
+    .version(1)
+      .addStore('myStore', { key: 'myKey' })
+      .addIndex('byId', 'id', { unique: true })
+    .version(2)
+      .getStore('myStore')
+      .addIndex('byName', 'name');</code></pre>
+        <pre class="bullet"><code class="language-javascript">var myDB = treo('myDB', schema); // Synchronous
+</code></pre>
+      </section>
+      <section>
+        <h2>Add Some Data</h2>
+        <pre class="bullet"><code class="language-javascript">var myStore = myDb.store('myStore');
+myStore.put('key', {/* data */}, function (err) {
+    if (err) { 
+        // failed
+    } // else success
+});</code></pre>
+        <pre class="bullet"><code class="language-javascript">myStore.put({/* data */}, function(err) { ... });
+</code></pre>
+      </section>
+      <section>
+        <h2>... Or Lots of Data</h2>
+        <pre><code class="language-javascript">myStore.batch({
+    key1: 'new value',
+    key2: null, // delete
+    key3: 'updated value'
+}, fn);
+
+myStore.batch([
+    { key: 'key1', val: 'value' },
+    { key: 'key2', val: 'another value'}
+], fn);
+</code></pre>
+      </section>
+      <section>
+        <h2>Read Some Data</h2>
+        <pre><code class="language-javascript">myStore.get('keyToLookup', function (err, val) {
+    if (err) {
+        // failed
+    } else {
+        console.log('Found: ' + val);
+    }
+});
+</code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Synchronous</h2>
+        <pre class="bullet"><code class="language-javascript">var schema = treo.schema(), // Sync
+    db = treo('db', schema), // Sync
+    store = db.store('store'); // Sync
+    
+store.get(...) // First async
+</code></pre>
+        <ul>
+          <li>Opens database connection</li>
+          <li>Handles onupgradeneeded - creates stores, indexes</li>
+          <li>Opens transaction (appropriate for put/get)</li>
+          <li>Performs the actual put/get</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Index!</h2>
+        <pre><code class="language-javascript">var byYear = myStore.index('byYear');
+
+byYear.get(2014, fn);
+byYear.get({ gte: 1999 }, fn);
+</code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Iteration?</h2>
+        <pre class="bullet"><code class="language-javascript">store.cursor(opts, fn)
+index.cursor(opts, fn)</code></pre><br>
+        <h2 class="bullet">Transactions?</h2>
+        <pre class="bullet"><code class="language-javascript">db.transaction(type, stores, fn)
+</code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Don't like callbacks?</h2><br>
+        <h3 class="bullet">Promises plugin!</h3>
+        <pre class="bullet"><code class="language-javascript">var promise = window.treoPromise;
+myDB.use(promise());
+
+myDB.store('myStore').get('key1')
+    .then(function (data) {
+        // success!
+    }, function (err) {
+        // error
+    });
+    </code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Offline? What?</h2><br>
+        <ul class="left-align">
+          <li>
+            <h3>Not for everyone</h3>
+          </li>
+          <li>
+            <h3><code>userExperience++</code></h3>
+          </li>
+          <li>
+            <h3><code>IndexedDB++</code></h3>
+          </li>
+          <li>
+            <h3><code>treo++</code></h3>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h1 id="vend-logo-large"></h1><br><br>
+        <h3>Come build beautiful, fast,<br>offline-capable apps with me</h3><br>
+        <h3><a href="https://www.vendhq.com/careers">https://www.vendhq.com/careers</a></h3>
+      </section>
+    </article>
+    <script src="build/build.js"></script>
+  </body>
+</html>
