@@ -103,7 +103,7 @@ html
                 h2 Open a Database
                 pre
                     code.language-javascript.
-                        var req = IDB.open('MyDB', 5),
+                        var req = IDB.open('MyDB', 1),
                             myDB;
 
                         req.onsuccess = function (event) {
@@ -161,7 +161,7 @@ html
 
                 pre.bullet
                     code.language-javascript.
-                        var request = myStore.add({ /* data goes here */ });
+                        var request = myStore.add({ /* some data */ }, key);
 
                         request.onsuccess = function (event) { ... };
 
