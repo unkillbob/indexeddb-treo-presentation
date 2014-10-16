@@ -77,7 +77,7 @@
       </section>
       <section>
         <h2>Open a Database</h2>
-        <pre><code class="language-javascript">var req = IDB.open('MyDB', 5),
+        <pre><code class="language-javascript">var req = IDB.open('MyDB', 1),
     myDB;
     
 req.onsuccess = function (event) {
@@ -128,7 +128,7 @@ req.onerror = function (event) { ... };
 
 var myStore = tx.objectStore('myStore');
 </code></pre>
-        <pre class="bullet"><code class="language-javascript">var request = myStore.add({ /* data goes here */ });
+        <pre class="bullet"><code class="language-javascript">var request = myStore.add({ /* some data */ }, key);
 
 request.onsuccess = function (event) { ... };
 </code></pre>
