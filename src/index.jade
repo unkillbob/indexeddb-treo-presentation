@@ -75,7 +75,7 @@ html
 
                 h2 Transactional
 
-                // Abort, rollback
+                // Container for db operations that ensures consistency and ability to abort, rollback
 
             section(data-bespoke-state='emphatic')
 
@@ -83,13 +83,13 @@ html
 
                 // key-value
                 // keys can be properties of the value
+                // keys can be generated
 
             section(data-bespoke-state='emphatic')
 
                 h2 Indexed
 
                 // Any property of the object
-                // Or generated
                 // Fast lookup or sorted enumeration
 
             section
@@ -169,6 +169,7 @@ html
                 h2 ... Or Update/Delete Data
                 pre
                     code.language-javascript.
+                        // Adds if key doesn't exist, Replaces if does
                         myStore.put({ /* the data */ }, 'key1');
 
                         myStore.delete('keyToDelete');
@@ -271,7 +272,7 @@ html
                         var treo = window.treo;
 
             section
-                h2 Create Schema & Database
+                h2 Create Schema &amp; Database
                 pre.bullet
                     code.language-javascript.
                         var schema = treo.schema()
@@ -378,6 +379,15 @@ html
                             }, function (err) {
                                 // error
                             });
+
+            section
+                h2.bullet Bonus Wrapper:
+                h2.bullet Dexie.js
+                a.bullet(href='http://www.dexie.org/') http://www.dexie.org/
+                br
+                h3.bullet Beautifully marketed
+                h3.bullet Extensively documented
+                h3.bullet Worth a look
 
             section
                 h2.bullet Offline? What?
