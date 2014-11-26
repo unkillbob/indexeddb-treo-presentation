@@ -57,17 +57,17 @@
       </section>
       <section data-bespoke-state="emphatic">
         <h2>Transactional</h2>
-        <!-- Abort, rollback-->
+        <!-- Container for db operations that ensures consistency and ability to abort, rollback-->
       </section>
       <section data-bespoke-state="emphatic">
         <h2>Object Store</h2>
         <!-- key-value-->
         <!-- keys can be properties of the value-->
+        <!-- keys can be generated-->
       </section>
       <section data-bespoke-state="emphatic">
         <h2>Indexed</h2>
         <!-- Any property of the object-->
-        <!-- Or generated-->
         <!-- Fast lookup or sorted enumeration-->
       </section>
       <section>
@@ -135,7 +135,8 @@ request.onsuccess = function (event) { ... };
       </section>
       <section>
         <h2>... Or Update/Delete Data</h2>
-        <pre><code class="language-javascript">myStore.put({ /* the data */ }, 'key1');
+        <pre><code class="language-javascript">// Adds if key doesn't exist, Replaces if does
+myStore.put({ /* the data */ }, 'key1');
 
 myStore.delete('keyToDelete');
 </code></pre>
@@ -226,7 +227,7 @@ var treo = window.treo;
 </code></pre>
       </section>
       <section>
-        <h2>Create Schema & Database</h2>
+        <h2>Create Schema &amp; Database</h2>
         <pre class="bullet"><code class="language-javascript">var schema = treo.schema()
     .version(1)
       .addStore('myStore', { key: 'myKey' })
@@ -317,6 +318,13 @@ myDB.store('myStore').get('key1')
         // error
     });
     </code></pre>
+      </section>
+      <section>
+        <h2 class="bullet">Bonus Wrapper:</h2>
+        <h2 class="bullet">Dexie.js</h2><a href="http://www.dexie.org/" class="bullet">http://www.dexie.org/</a><br>
+        <h3 class="bullet">Beautifully marketed</h3>
+        <h3 class="bullet">Extensively documented</h3>
+        <h3 class="bullet">Worth a look</h3>
       </section>
       <section>
         <h2 class="bullet">Offline? What?</h2><br>
